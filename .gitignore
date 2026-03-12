@@ -1,0 +1,34 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Model artifacts
+*.bin
+*.safetensors
+*.pt
+*.pth
+outputs/
+results/
+models/
+checkpoints/
+
+# Data cache
+.cache/
+data/
+
+# Environment
+.env
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+ClaudeResume.txt
+
