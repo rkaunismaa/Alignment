@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-A 9-notebook Jupyter series teaching LLM alignment techniques hands-on, from foundational concepts through SFT, reward modeling, RLHF (GRPO), DPO, f-GRPO, and evaluation. All training targets **Qwen2.5-7B-Instruct** on a local **RTX 4090 (24GB VRAM)**.
+A 10-notebook Jupyter series teaching LLM alignment techniques hands-on, from foundational concepts through SFT, reward modeling, RLHF (GRPO), DPO, f-GRPO, and comprehensive evaluation. All training targets **Qwen2.5-7B-Instruct** on a local **RTX 4090 (24GB VRAM)**.
 
 ## Environment
 
@@ -44,6 +44,7 @@ Each notebook produces artifacts consumed by later notebooks:
 7. **07_Evaluation_and_Comparison** — Loads all models sequentially for evaluation
 8. **08_Group_Relative_Policy_Optimization** — Deep dive into GRPO with custom reward functions
 9. **09_f_GRPO** — f-GRPO: divergence-based RL alignment using f-divergence variational bounds (custom implementation, not TRL)
+10. **10_Final_Evaluation** — Comprehensive comparison of all models: reward scores, win-rate matrix, ELO ratings, response analysis
 
 ## Key Technical Constraints
 

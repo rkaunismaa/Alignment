@@ -15,6 +15,7 @@ A hands-on tutorial series covering the complete LLM alignment pipeline — from
 | **07** | Evaluation and Comparison | Perplexity, reward scores, safety rates, win-rate matrices, ELO ratings |
 | **08** | Group Relative Policy Optimization | Deep dive into GRPO with custom multi-objective reward functions |
 | **09** | f-GRPO | Divergence-based RL alignment — 6 f-divergences, custom training loop, divergence comparison |
+| **10** | Final Evaluation | Comprehensive comparison of all models — reward scores, win rates, ELO ratings |
 
 ## Requirements
 
@@ -51,6 +52,9 @@ Notebooks should be run **in order** — each produces model artifacts used by l
 
 08 (GRPO deep-dive) — standalone, no prior artifacts required
 09 (f-GRPO)          — standalone, no prior artifacts required
+
+10 (Final Evaluation) — loads all available model adapters for comparison
+                        (runs with whatever subset exists)
 ```
 
 Launch Jupyter and select the `alignment` kernel:
@@ -73,7 +77,8 @@ results/
 ├── grpo/final/                 # GRPO adapter from Notebook 08
 ├── fgrpo_kl/final/             # f-GRPO (KL) adapter from Notebook 09
 ├── fgrpo_reverse_kl/final/     # f-GRPO (Reverse KL) adapter from Notebook 09
-└── fgrpo_hellinger/final/      # f-GRPO (Hellinger) adapter from Notebook 09
+├── fgrpo_hellinger/final/      # f-GRPO (Hellinger) adapter from Notebook 09
+└── final_evaluation.json       # Cached evaluation results from Notebook 10
 ```
 
 ## Key Libraries
