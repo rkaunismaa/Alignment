@@ -1,6 +1,6 @@
 # LLM Alignment Notebook Series
 
-A hands-on tutorial series covering the complete LLM alignment pipeline — from supervised fine-tuning through RLHF (GRPO), DPO, and evaluation — implemented on a single GPU.
+A hands-on tutorial series covering the complete LLM alignment pipeline — from supervised fine-tuning through RLHF (GRPO), DPO, f-GRPO, and evaluation — implemented on a single GPU.
 
 ## Overview
 
@@ -14,6 +14,7 @@ A hands-on tutorial series covering the complete LLM alignment pipeline — from
 | **06** | Direct Preference Optimization | DPO as a simpler alternative to RLHF on UltraFeedback |
 | **07** | Evaluation and Comparison | Perplexity, reward scores, safety rates, win-rate matrices, ELO ratings |
 | **08** | Group Relative Policy Optimization | Deep dive into GRPO with custom multi-objective reward functions |
+| **09** | f-GRPO | Divergence-based RL alignment — 6 f-divergences, custom training loop, divergence comparison |
 
 ## Requirements
 
@@ -49,6 +50,7 @@ Notebooks should be run **in order** — each produces model artifacts used by l
 03 (SFT) ──→ 06 (DPO) ──→ 07 (Evaluation)
 
 08 (GRPO deep-dive) — standalone, no prior artifacts required
+09 (f-GRPO)          — standalone, no prior artifacts required
 ```
 
 Launch Jupyter and select the `alignment` kernel:
@@ -67,7 +69,11 @@ results/
 ├── reward_model/final/         # Reward model adapter from Notebook 04
 ├── ppo/checkpoint-<step>/      # GRPO checkpoint from Notebook 05
 ├── ppo/final/                  # GRPO final (copied from latest checkpoint)
-└── dpo/final/                  # DPO LoRA adapter from Notebook 06
+├── dpo/final/                  # DPO LoRA adapter from Notebook 06
+├── grpo/final/                 # GRPO adapter from Notebook 08
+├── fgrpo_kl/final/             # f-GRPO (KL) adapter from Notebook 09
+├── fgrpo_reverse_kl/final/     # f-GRPO (Reverse KL) adapter from Notebook 09
+└── fgrpo_hellinger/final/      # f-GRPO (Hellinger) adapter from Notebook 09
 ```
 
 ## Key Libraries
@@ -81,6 +87,8 @@ results/
 | [datasets](https://github.com/huggingface/datasets) | 4.7.0 | HuggingFace dataset loading |
 
 > **Note:** TRL 0.29.0 removed PPO entirely (`PPOConfig`, `PPOTrainer`, `AutoModelForCausalLMWithValueHead` no longer exist). Notebook 05 uses `GRPOTrainer` instead, which achieves the same RLHF goal without a value head.
+
+> **Note:** f-GRPO (Notebook 09) is not supported by TRL and uses a fully custom training loop. It implements the algorithm from Haldar et al., "f-GRPO and Beyond" (arXiv 2602.05946, Feb 2026).
 
 ## Datasets Used
 

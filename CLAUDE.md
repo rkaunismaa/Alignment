@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-An 8-notebook Jupyter series teaching LLM alignment techniques hands-on, from foundational concepts through SFT, reward modeling, RLHF (GRPO), DPO, and evaluation. All training targets **Qwen2.5-7B-Instruct** on a local **RTX 4090 (24GB VRAM)**.
+A 9-notebook Jupyter series teaching LLM alignment techniques hands-on, from foundational concepts through SFT, reward modeling, RLHF (GRPO), DPO, f-GRPO, and evaluation. All training targets **Qwen2.5-7B-Instruct** on a local **RTX 4090 (24GB VRAM)**.
 
 ## Environment
 
@@ -43,6 +43,7 @@ Each notebook produces artifacts consumed by later notebooks:
 6. **06_Direct_Preference_Optimization** — DPO on UltraFeedback → saves to `./results/dpo/final/`
 7. **07_Evaluation_and_Comparison** — Loads all models sequentially for evaluation
 8. **08_Group_Relative_Policy_Optimization** — Deep dive into GRPO with custom reward functions
+9. **09_f_GRPO** — f-GRPO: divergence-based RL alignment using f-divergence variational bounds (custom implementation, not TRL)
 
 ## Key Technical Constraints
 
@@ -63,6 +64,15 @@ Each notebook produces artifacts consumed by later notebooks:
 - **`tokenizer=` is removed**: Use `processing_class=tokenizer` in `SFTTrainer`, `RewardTrainer`, and `GRPOTrainer`
 - **`warmup_ratio` is deprecated**: Use `warmup_steps` instead
 - **GRPO reward functions** must have signature `func(prompts: list[str], completions: list[str], **kwargs) -> list[float]`
+
+### f-GRPO (Notebook 09)
+- **Not supported by TRL** — uses a fully custom training loop
+- Requires a reference model; uses `model.disable_adapter_layers()` / `model.enable_adapter_layers()` to share weights between policy and reference (no extra VRAM copy)
+- Implements 6 f-divergences: KL, Reverse KL, Pearson χ², Hellinger, Jensen-Shannon, Total Variation
+- Each divergence has a generator `f(t)`, Fenchel conjugate `f*(s)`, and link function `g(r)`
+- Completions are split into D+ (positive advantage) and D- (negative advantage); different transformations applied to each set
+- LoRA weights are reset between divergence comparison runs via `kaiming_uniform_` (A) and `zeros_` (B)
+- Paper: Haldar et al., "f-GRPO and Beyond", arXiv 2602.05946, Feb 2026
 
 ### GRPO Completions Format (Notebooks 05 & 08)
 When calling reward functions manually (e.g. in comparison cells), pass completions as `[[{"content": "..."}]]` — a list containing one message-dict list. Do **not** use `[c[0] for c in comps]` — that unwraps to a bare dict and breaks `re.search`.
