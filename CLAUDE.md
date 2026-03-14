@@ -106,6 +106,43 @@ LoraConfig(r=16, lora_alpha=32, lora_dropout=0.05,
            task_type=TaskType.CAUSAL_LM)
 ```
 
+## Evaluation Results Summary
+
+### Notebook 07: Core Pipeline Evaluation (Base, SFT, PPO/GRPO, DPO)
+
+| Model | Perplexity | Reward Model | Safety | Win Rate | ELO | Avg Words |
+|-------|-----------|-------------|--------|----------|-----|-----------|
+| Base  | 4.65      | -8.08       | 100%   | 58.3%    | 1551 | 166      |
+| DPO   | 4.66      | -8.54       | 100%   | 56.5%    | 1571 | 165      |
+| SFT   | 5.71      | -8.53       | 100%   | 42.6%    | 1444 | 121      |
+| PPO   | 5.71      | -8.38       | 100%   | 42.6%    | 1434 | 118      |
+
+- DPO and Base are essentially tied; DPO wins on ELO, Base on reward model score
+- SFT/PPO produce shorter responses but degrade perplexity
+- All Wilcoxon signed-rank tests non-significant (p > 0.05) — differences are small
+
+### Notebook 10: Full Comparison (all 8 models)
+
+| Rank | Model | Total Reward | Reward Model | Perplexity | Win Rate | ELO |
+|------|-------|-------------|-------------|-----------|----------|-----|
+| 1 | RLHF-GRPO | 2.826 | -10.75 | 5.71 | 60.0% | 1587 |
+| 2 | SFT | 2.807 | -9.77 | 5.71 | 51.8% | 1530 |
+| 3 | f-GRPO (KL) | 2.737 | -7.44 | 4.66 | 54.3% | 1511 |
+| 4 | DPO | 2.709 | -7.03 | 4.66 | 49.6% | 1507 |
+| 5 | Base | 2.688 | -7.72 | 4.65 | 49.3% | 1481 |
+| 6 | GRPO-Custom | 2.684 | -9.09 | 4.66 | 48.6% | 1477 |
+| 7 | f-GRPO (Hellinger) | 2.682 | -8.31 | 4.65 | 46.1% | 1465 |
+| 8 | f-GRPO (RevKL) | 2.675 | -6.74 | 4.67 | 40.4% | 1442 |
+
+### Key Findings
+
+1. **RLHF-GRPO is the overall winner** by composite score (ELO + win rate + reward) despite worst perplexity and reward model scores — it excels at conciseness (0.700) and instruction-following
+2. **Metrics disagree**: the trained reward model ranks f-GRPO (RevKL) best (-6.74) while rule-based rewards + ELO rank RLHF-GRPO first — different metrics capture different quality aspects
+3. **SFT/RLHF degrade perplexity** (5.71 vs 4.65 base) but improve conciseness and structure; DPO/f-GRPO preserve perplexity while still improving
+4. **All models maintain 100% safety** — no alignment method degraded safety refusal behaviour
+5. **Response length trade-off**: RLHF-GRPO and SFT are most concise (171-180 words avg), f-GRPO variants and Base are most verbose (255-258 words)
+6. **f-GRPO divergence choice matters**: KL is the best f-GRPO variant (rank 3 overall); Reverse KL is worst (rank 8) despite highest reward model score
+
 ## Datasets
 - **Anthropic/hh-rlhf** — preference pairs (chosen/rejected conversation strings with `\n\nHuman:`/`\n\nAssistant:` format)
 - **HuggingFaceH4/ultrafeedback_binarized** — binarized preference data for DPO

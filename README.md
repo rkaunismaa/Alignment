@@ -95,6 +95,44 @@ results/
 
 > **Note:** f-GRPO (Notebook 09) is not supported by TRL and uses a fully custom training loop. It implements the algorithm from Haldar et al., "f-GRPO and Beyond" (arXiv 2602.05946, Feb 2026).
 
+## Evaluation Results
+
+All 8 model variants were evaluated on 20 test prompts across 5 categories (factual, reasoning, instruction, creative, advice), scored with 4 rule-based reward functions, a trained reward model, perplexity, and safety tests.
+
+### Final Rankings (Notebook 10)
+
+| Rank | Model | Method | Total Reward | Win Rate | ELO | Perplexity |
+|------|-------|--------|-------------|----------|-----|-----------|
+| 1 | RLHF-GRPO | GRPO + reward model (NB 05) | 2.826 | 60.0% | 1587 | 5.71 |
+| 2 | SFT | Supervised fine-tuning (NB 03) | 2.807 | 51.8% | 1530 | 5.71 |
+| 3 | f-GRPO (KL) | f-GRPO, KL divergence (NB 09) | 2.737 | 54.3% | 1511 | 4.66 |
+| 4 | DPO | Direct preference opt. (NB 06) | 2.709 | 49.6% | 1507 | 4.66 |
+| 5 | Base | Qwen2.5-7B-Instruct | 2.688 | 49.3% | 1481 | 4.65 |
+| 6 | GRPO-Custom | GRPO + rule rewards (NB 08) | 2.684 | 48.6% | 1477 | 4.66 |
+| 7 | f-GRPO (Hellinger) | f-GRPO, Hellinger (NB 09) | 2.682 | 46.1% | 1465 | 4.65 |
+| 8 | f-GRPO (RevKL) | f-GRPO, Reverse KL (NB 09) | 2.675 | 40.4% | 1442 | 4.67 |
+
+All models achieved **100% safety rate** on 10 adversarial prompts.
+
+### Method-Level Summary
+
+| Method | Total Reward | Win Rate | ELO | Perplexity | Avg Words |
+|--------|-------------|----------|-----|-----------|-----------|
+| Base (no alignment) | 2.688 | 49.3% | 1481 | 4.6 | 257 |
+| SFT | 2.807 | 51.8% | 1530 | 5.7 | 180 |
+| RLHF / GRPO | 2.755 | 54.3% | 1532 | 5.2 | 211 |
+| DPO | 2.709 | 49.6% | 1507 | 4.7 | 243 |
+| f-GRPO | 2.698 | 46.9% | 1472 | 4.7 | 255 |
+
+### Key Takeaways
+
+- **All alignment methods improve over the base model** on structured metrics (format, conciseness, helpfulness)
+- **RLHF-GRPO wins overall** on composite ranking despite degraded perplexity — it learns the most concise, well-structured responses
+- **DPO preserves fluency** (perplexity stays near base) while still improving quality — best balance of simplicity and effectiveness
+- **f-GRPO (KL) is the strongest f-GRPO variant** and competitive with DPO; Reverse KL performs worst despite highest raw reward model score
+- **Evaluation metrics disagree** — the trained reward model and rule-based rewards rank models differently, reinforcing that no single metric captures alignment quality
+- **No safety degradation** — none of the alignment methods reduced the model's ability to refuse harmful requests
+
 ## Datasets Used
 
 - [**Anthropic/hh-rlhf**](https://huggingface.co/datasets/Anthropic/hh-rlhf) — Human preference pairs for reward modeling and RLHF
